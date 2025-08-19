@@ -1,0 +1,10 @@
+[
+{ "id": 1, "title": "Pasaje a Córdoba", "price": 150000, "category": "Transporte", "img": "https://turismo.cordoba.gob.ar/wp-content/uploads/2021/07/dsdsd-scaled-e1677342686741-1110x624.jpg" },
+{ "id": 2, "title": "Paquete Mendoza 3 noches", "price": 220000, "category": "Paquetes", "img": "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/20/a5/f9.jpg" },
+{ "id": 3, "title": "City Tour Buenos Aires", "price": 60000, "category": "Excursiones", "img": "https://wttc.org/getContentAsset/88a777ac-cdfa-47b3-9461-5f173b0da8e8/489c4c4e-cfe8-42ba-91b1-27fe878007dd/Buenos-Aires,-Argentina.webp?language=en" },
+{ "id": 4, "title": "Hotel Estándar (x noche)", "price": 45000, "category": "Alojamiento", "img": "https://static1.eskypartners.com/travelguide/vancouver-hotels.jpg" },
+{ "id": 5, "title": "Seguro de viaje", "price": 30000, "category": "Extras", "img": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWbydtVEgMaJ_xS1-eJPiSAxJAPYKEaf8LNQ&s" },
+{ "id": 6, "title": "Visita estadio de Futbol", "price": 50000, "category": "Extras", "img": "https://hoydia.com.ar/wp-content/uploads/2024/12/Talleres-4-optimized.jpg" }
+
+
+]
