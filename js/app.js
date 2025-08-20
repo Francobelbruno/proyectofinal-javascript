@@ -1,9 +1,6 @@
-// =============================
-// Config & Estado
-// =============================
 const state = {
 products: [],
-filtered: [],
+filt: [],
 cart: JSON.parse(localStorage.getItem('cart') || '[]'),
 currency: localStorage.getItem('currency') || 'ARS',
 rates: { ARS: 1, USD: 0.001 },
@@ -34,7 +31,7 @@ async function fetchProducts() {
   const res = await fetch('data/products.json');
   const products = await res.json();
   state.products = products;
-  state.filtered = products;
+  state.filtros = products;
   renderProducts();
   renderCategories();
 }
@@ -42,7 +39,7 @@ async function fetchProducts() {
 function renderProducts() {
   const grid = els.grid();
   grid.innerHTML = '';
-  state.filtered.forEach(product => {
+  state.filtros.forEach(product => {
     const div = document.createElement('div');
     div.className = 'card';
     div.innerHTML = `
@@ -75,7 +72,7 @@ document.addEventListener('DOMContentLoaded', fetchProducts);
 
 els.q().addEventListener('input', () => {
   const q = els.q().value.toLowerCase();
-  state.filtered = state.products.filter(p =>
+  state.filtros = state.products.filter(p =>
     p.title.toLowerCase().includes(q)
   );
   renderProducts();
@@ -83,7 +80,7 @@ els.q().addEventListener('input', () => {
 
 els.category().addEventListener('change', () => {
   const cat = els.category().value;
-  state.filtered = cat
+  state.filtros = cat
     ? state.products.filter(p => p.category === cat)
     : state.products;
   renderProducts();
@@ -140,7 +137,6 @@ function closeCart() {
   modal.hide();
 }
 
-// Eventos para abrir/cerrar el carrito
 els.btnCart().addEventListener('click', openCart);
 els.closeCart().addEventListener('click', closeCart);
 
@@ -181,12 +177,13 @@ els.goCheckout().addEventListener('click', () => {
   closeCart();
 });
 
+//TEMA OSCURO Y CLARO
+
 document.addEventListener('DOMContentLoaded', () => {
   const themeBtn = document.getElementById('toggleTheme');
   const themeIcon = document.getElementById('themeIcon');
   const body = document.body; // <-- CAMBIA html por body
 
-  // Cargar preferencia guardada
   if (localStorage.getItem('theme') === 'light') {
     body.setAttribute('data-bs-theme', 'light');
     themeIcon.classList.remove('bi-moon');
