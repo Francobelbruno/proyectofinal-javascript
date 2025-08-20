@@ -46,11 +46,22 @@ function renderProducts() {
       <img src="${product.img}" class="card__img" alt="${product.title}">
       <div class="card__title">${product.title}</div>
       <div class="card__price">${formatPrice(product.price)}</div>
-      <div class="card__footer">
-        <button class="btn btn--primary" onclick="addToCart(${product.id})">Agregar</button>
+      <div class="card__footer d-flex align-items-center gap-2">
+        <input type="number" min="1" value="1" class="form-control form-control-sm qty-input" style="width:70px" id="qty-${product.id}">
+        <button class="btn btn--primary" data-id="${product.id}">Agregar</button>
       </div>
     `;
     grid.appendChild(div);
+  });
+
+  // Evento para cada botón Agregar
+  grid.querySelectorAll('.btn--primary').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const id = Number(btn.getAttribute('data-id'));
+      const qtyInput = document.getElementById(`qty-${id}`);
+      const qty = Math.max(1, parseInt(qtyInput.value) || 1);
+      addToCart(id, qty);
+    });
   });
 }
 
@@ -86,12 +97,12 @@ els.category().addEventListener('change', () => {
   renderProducts();
 });
 
-function addToCart(id) {
+function addToCart(id, qty = 1) {
   const item = state.cart.find(i => i.id === id);
   if (item) {
-    item.qty += 1;
+    item.qty += qty;
   } else {
-    state.cart.push({ id, qty: 1 });
+    state.cart.push({ id, qty });
   }
   localStorage.setItem('cart', JSON.stringify(state.cart));
   updateCartCount();
@@ -108,21 +119,57 @@ function renderCart() {
   const cartItems = els.cartItems();
   if (!state.cart.length) {
     cartItems.innerHTML = '<p>El carrito está vacío.</p>';
+    els.goCheckout().disabled = true;
     return;
   }
+  els.goCheckout().disabled = false;
   cartItems.innerHTML = state.cart.map(item => {
     const prod = state.products.find(p => p.id === item.id);
     return `
-      <div class="cart-item">
+      <div class="cart-item align-items-center">
         <img src="${prod.img}" alt="${prod.title}" width="64" height="48">
         <div>
           <div class="cart-item__title">${prod.title}</div>
-          <div class="cart-item__meta">${item.qty} x ${formatPrice(prod.price)}</div>
+          <div class="cart-item__meta d-flex align-items-center gap-2">
+            <button class="btn btn-sm btn-secondary btn-qty" data-action="decrease" data-id="${item.id}">–</button>
+            <span>${item.qty}</span>
+            <button class="btn btn-sm btn-secondary btn-qty" data-action="increase" data-id="${item.id}">+</button>
+          </div>
         </div>
-        <div><strong>${formatPrice(prod.price * item.qty)}</strong></div>
+        <div>
+          <strong>${formatPrice(prod.price * item.qty)}</strong>
+          <button class="btn btn-sm btn-danger ms-2 btn-remove" data-id="${item.id}" title="Eliminar"><i class="bi bi-trash"></i></button>
+        </div>
       </div>
     `;
   }).join('');
+
+  // Eventos para +, -, eliminar
+  cartItems.querySelectorAll('.btn-qty').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const id = Number(btn.getAttribute('data-id'));
+      const action = btn.getAttribute('data-action');
+      const item = state.cart.find(i => i.id === id);
+      if (action === 'increase') {
+        item.qty += 1;
+      } else if (action === 'decrease' && item.qty > 1) {
+        item.qty -= 1;
+      }
+      localStorage.setItem('cart', JSON.stringify(state.cart));
+      updateCartCount();
+      renderCart();
+    });
+  });
+
+  cartItems.querySelectorAll('.btn-remove').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const id = Number(btn.getAttribute('data-id'));
+      state.cart = state.cart.filter(i => i.id !== id);
+      localStorage.setItem('cart', JSON.stringify(state.cart));
+      updateCartCount();
+      renderCart();
+    });
+  });
 }
 
 function openCart() {
@@ -166,8 +213,8 @@ els.goCheckout().addEventListener('click', () => {
     return;
   }
   Swal.fire({
-    title: '¡Compra confirmada!',
-    text: 'Gracias por tu compra. Pronto recibirás un email con los detalles.',
+    title: '¡Gracias por la compra!',
+    text: 'Nos comunicaremos brevemente.',
     icon: 'success'
   });
   state.cart = [];
