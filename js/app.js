@@ -78,7 +78,6 @@ function formatPrice(price) {
     : `$${price.toLocaleString()} ARS`;
 }
 
-// Llama a fetchProducts al cargar la página
 document.addEventListener('DOMContentLoaded', fetchProducts);
 
 els.q().addEventListener('input', () => {
@@ -144,7 +143,6 @@ function renderCart() {
     `;
   }).join('');
 
-  // Eventos para +, -, eliminar
   cartItems.querySelectorAll('.btn-qty').forEach(btn => {
     btn.addEventListener('click', e => {
       const id = Number(btn.getAttribute('data-id'));
